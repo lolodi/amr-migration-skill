@@ -55,7 +55,7 @@ This document provides a comparison of features between Azure Cache for Redis an
 | Clustering | ✅ (Premium tier) | ✅ |
 | Non-clustered Mode | ✅ | ✅ |
 | Online Scaling | ✅ | ✅ |
-| Max Shards | 10 | Varies by SKU |
+| Max Shards | 15 (Premium) | N/A (sharding is managed internally) |
 
 ## High Availability & Disaster Recovery
 

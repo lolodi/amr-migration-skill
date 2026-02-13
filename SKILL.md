@@ -33,6 +33,10 @@ Respond with:
 **Supported source tiers**: Basic (C0-C6), Standard (C0-C6), Premium (P1-P5)
 **Not supported**: Enterprise, Enterprise Flash
 
+## ⚠️ AMR Terminology: No "Shards"
+
+**Do not use the term "shards" when describing AMR (Azure Managed Redis).** In AMR, sharding is managed internally and not exposed to the customer. The concept of shards only applies to ACR Premium clustered caches. When discussing AMR, refer to the SKU and its memory capacity instead.
+
 ---
 
 ## When to Use This Skill
@@ -67,10 +71,7 @@ See [Azure CLI Commands](references/azure-cli-commands.md) for practical `az red
 - Check persistence and geo-replication settings
 
 ### SKU Mapping Reference
-See [SKU Mapping Guide](assets/sku-mapping.md) for guidance on selecting the appropriate AMR SKU based on existing ACR cache configuration. Includes:
-- Complete SKU definitions with usable memory (after 20% reservation)
-- Pricing estimates for comparison
-- Detailed mapping tables for all tiers (Basic, Standard, Premium, Clustered)
+See [SKU Mapping Guide](references/sku-mapping.md) for guidelines, ACR → AMR mapping tables, selection criteria, and decision matrix. For AMR SKU definitions (M, B, X, Flash series), see [AMR SKU Specs](references/amr-sku-specs.md).
 
 ### Dynamic Pricing Lookup
 Once you've identified candidate SKUs, get real-time pricing with monthly cost calculations:
@@ -149,7 +150,7 @@ Use these values to:
 3. Verify connection limits are sufficient
 
 ### Step 2: Select Target AMR SKU
-1. Refer to the [SKU Mapping Guide](assets/sku-mapping.md)
+1. Refer to the [SKU Mapping Guide](references/sku-mapping.md)
 2. Use metrics from Step 1 to validate sizing
 3. Get pricing for candidate SKUs:
    ```powershell
@@ -177,7 +178,7 @@ Fetch documentation from the MCP server for the latest comparison, but key diffe
 - AMR provides enhanced performance and scalability options
 
 ### How do I choose the right AMR SKU?
-Refer to [SKU Mapping Guide](assets/sku-mapping.md) and consider:
+Refer to [SKU Mapping Guide](references/sku-mapping.md) and consider:
 - Current memory usage and growth projections
 - Required throughput (operations/second)
 - Feature requirements (clustering, geo-replication, Redis modules)

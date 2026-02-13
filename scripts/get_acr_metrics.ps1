@@ -119,4 +119,4 @@ Write-Host "  - Memory: Choose SKU with usable memory > max used memory + 20% bu
 Write-Host "  - Server Load: High Server Load (>70%) with low memory suggests Compute Optimized (X-series)"
 Write-Host "  - Connections: Check max connections supported by target SKU"
 Write-Host ""
-Write-Host "See assets/sku-mapping.md for SKU selection guidance."
+Write-Host "See references/sku-mapping.md for SKU selection guidance."

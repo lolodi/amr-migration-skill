@@ -50,9 +50,9 @@ amr-migration-skill/
 │   ├── mcp-server-config.md     # MCP server setup for live documentation
 │   ├── migration-overview.md    # Migration strategies and guidance
 │   ├── pricing-tiers.md         # Pricing calculation rules
-│   └── retirement-faq.md        # ACR retirement dates and FAQ
-├── assets/
-│   └── sku-mapping.md           # SKU selection guidance
+│   ├── retirement-faq.md        # ACR retirement dates and FAQ
+│   ├── sku-mapping.md           # SKU selection guidelines & decision matrix
+│   └── amr-sku-specs.md          # AMR SKU definitions (M, B, X, Flash series)
 └── scripts/
     ├── get_acr_metrics.ps1      # Pull ACR metrics for SKU sizing
     ├── get_acr_metrics.sh
@@ -64,7 +64,7 @@ amr-migration-skill/
 
 This skill leverages:
 - **Microsoft Learn MCP Server**: `https://learn.microsoft.com/api/mcp` for up-to-date Azure documentation
-- **SKU Mapping Data**: Internal spreadsheet (requires updates to `assets/sku-mapping.md`)
+- **SKU Mapping Data**: Internal spreadsheet (requires updates to `references/sku-mapping.md`)
 - **Azure CLI Reference**: `references/azure-cli-commands.md`
 
 ## Contributing
