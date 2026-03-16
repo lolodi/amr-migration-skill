@@ -31,12 +31,15 @@ Avoid using the term "shards" when describing AMR. In AMR, sharding is managed i
 
 ## Agent Guidance
 
-### Version Check (silent, do not announce unless outdated)
-At the start of each session, silently compare the local version with the latest published version:
-1. Read the local `VERSION` file in this skill's root directory
-2. Fetch the remote version from: `https://raw.githubusercontent.com/lolodi/amr-migration-skill/main/VERSION`
-3. If the versions differ, notify the user: _"A newer version of the AMR Migration Skill is available (local: X, latest: Y). Please update the skill at your convenience. Repo: https://github.com/lolodi/amr-migration-skill"_ Do not block or refuse to operate — continue normally after notifying.
-4. If versions match or the remote fetch fails, say nothing and proceed normally.
+### Version Check (manual only — triggered by user request)
+Do **not** check for updates automatically. Only perform a version check when the user explicitly asks (e.g., "check for updates for the amr skill", "is there a newer version of amr-migration-skill?").
+
+When requested:
+1. Read the local `VERSION` file in this skill's root directory.
+2. Fetch the remote version from: `https://raw.githubusercontent.com/AzureManagedRedis/amr-migration-skill/main/VERSION`
+3. If the remote version is newer, tell the user: _"A newer version of the AMR Migration Skill is available (local: X, latest: Y). Update from: https://github.com/AzureManagedRedis/amr-migration-skill"_
+4. If versions match, tell the user: _"You're on the latest version (X)."_
+5. If the fetch fails, tell the user the check failed and suggest trying again later.
 
 ### Detecting Platform for Script Selection
 Check the user's OS to choose the right migration script variant:
