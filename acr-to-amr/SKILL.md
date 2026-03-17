@@ -1,14 +1,32 @@
 ---
-name: amr-migration-skill
+name: acr-to-amr-migration-skill
 description: |
-  Helps users migrate from Azure Cache for Redis (ACR) to Azure Managed Redis (AMR).
-  Use when users ask about: Redis migration, AMR vs ACR features, SKU selection, 
-  migration best practices, feature compatibility, or Azure Redis cache upgrades.
+  Helps users migrate from Azure Cache for Redis (ACR) Basic/Standard/Premium tiers
+  to Azure Managed Redis (AMR). Use when users ask about: ACR to AMR migration,
+  Redis OSS migration, Basic/Standard/Premium tier migration, C0-C6/P1-P5 cache upgrade,
+  AMR vs ACR features, AMR SKU selection, feature compatibility, pricing comparison,
+  migration best practices, retirement timeline, or Azure Redis cache upgrades.
+  Does NOT cover Enterprise (ACRE) migration — that is handled by the acre-to-amr-migration-skill.
 ---
 
-# Azure Managed Redis Migration Skill
+# ACR to AMR Migration Skill
 
-This skill assists users in migrating from Azure Cache for Redis (ACR) Basic/Standard/Premium tiers to Azure Managed Redis (AMR).
+This skill assists users in migrating from **Azure Cache for Redis (ACR)** Basic/Standard/Premium tiers to **Azure Managed Redis (AMR)**.
+
+**Supported source SKUs**: Basic (C0–C6), Standard (C0–C6), Premium (P1–P5)
+**Resource type**: `Microsoft.Cache/redis`
+
+---
+
+## ⚠️ Scope Boundary
+
+This skill covers **ACR → AMR migration only** (Basic/Standard/Premium).
+
+If the user asks about migrating from **Azure Cache for Redis Enterprise (ACRE)** — including Enterprise (`Enterprise_*`) or Enterprise Flash (`EnterpriseFlash_*`) SKUs, `az redisenterprise` CLI commands, or `*-AzRedisEnterprise*` PowerShell cmdlets — **stop and tell them**:
+
+> "Enterprise tier migration is handled by the `acre-to-amr-migration-skill`. That skill covers automation script updates, interactive cache migration, and generic migration guides for ACRE → AMR."
+
+---
 
 ## 📝 Terminology Note
 
@@ -18,20 +36,6 @@ Users may refer to Azure Cache for Redis by several names:
 - **Basic**, **Standard**, or **Premium** tier
 
 These all refer to the same product: **Azure Cache for Redis**. Treat these terms interchangeably when users ask about migration.
-
-## ⚠️ Scope Limitation: Enterprise Tier NOT Supported
-
-**This skill does NOT cover Azure Cache for Redis Enterprise (ACRE) migrations.**
-
-If users ask about migrating from:
-- Azure Cache for Redis **Enterprise** tier
-- Azure Cache for Redis **Enterprise Flash** tier
-
-Respond with:
-> "This skill only covers migrations from Azure Cache for Redis (Basic, Standard, and Premium tiers) to Azure Managed Redis. Please consult Microsoft support or the official documentation for Enterprise tier migration guidance."
-
-**Supported source tiers**: Basic (C0-C6), Standard (C0-C6), Premium (P1-P5)
-**Not supported**: Enterprise, Enterprise Flash
 
 ## ⚠️ AMR Terminology: No "Shards"
 
@@ -108,11 +112,8 @@ See [Feature Comparison](references/feature-comparison.md) for detailed comparis
 ### Retirement FAQ
 See [Retirement FAQ](references/retirement-faq.md) for retirement dates, timelines, and common migration questions.
 
-**Relevant to this skill (ACR Basic/Standard/Premium)**:
 - **Basic/Standard/Premium**: Retire September 30, 2028
-
-**Not covered by this skill**:
-- Enterprise/Enterprise Flash retirement (March 31, 2027) - contact Microsoft support
+- Enterprise/Enterprise Flash retirement (March 31, 2027) is covered by the `acre-to-amr-migration-skill`
 
 ### Migration Overview
 See [Migration Overview](references/migration-overview.md) for detailed migration guidance including:
@@ -201,7 +202,7 @@ Refer to [SKU Mapping Guide](references/sku-mapping.md) and consider:
 Check [Feature Comparison](references/feature-comparison.md) for the current feature matrix. Use the MCP server to fetch the latest documentation for authoritative information.
 
 ### What about Enterprise tier migration?
-**This skill does not cover Enterprise tier migrations.** If asked about ACRE (Azure Cache for Redis Enterprise) migration, inform the user that Enterprise tier has different considerations and they should consult Microsoft support or official documentation.
+Enterprise tier (ACRE) migration is covered by the separate `acre-to-amr-migration-skill`. If asked about ACRE migration, tell the user to invoke that skill instead. Do NOT use this skill's references for Enterprise tier.
 
 ## Tips for Effective Migration
 
