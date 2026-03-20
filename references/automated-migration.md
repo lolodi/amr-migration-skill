@@ -16,10 +16,11 @@ For detailed documentation on the underlying ARM API endpoints, request/response
 
 **Supported source SKUs**: All Basic (C0–C6), Standard (C0–C6), and Premium (P1–P5) — **except**:
 - Private Link enabled caches
-- VNet injected caches
 - Geo-Replication enabled caches
 
 These exclusions are expected to be supported in future releases.
+
+**VNet-injected caches**: Supported. The DNS swap and access-key sharing work the same as for non-VNet caches. However, the customer **must create Private Endpoints on the target AMR cache** before migrating, since AMR does not support VNet injection. Without Private Endpoints, the migrated cache will not be reachable from the customer's VNet.
 
 **Requirements**:
 - Source and target must be in the **same Azure region** (validation error if not)

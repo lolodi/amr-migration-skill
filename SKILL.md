@@ -199,7 +199,7 @@ Use these values to:
 ### Step 3: Plan Migration
 1. Determine migration strategy (dual-write, snapshot/restore, etc.)
 2. **Clustering policy**: For non-clustered ACR caches (Basic, Standard, non-clustered Premium), create the AMR cache with **Enterprise clustering policy** to avoid client application changes. OSS clustering policy exposes cluster topology and may require a cluster-aware client.
-3. **Network isolation**: ACR caches using VNet injection must be replaced with **Private Link** on AMR, as AMR does not support VNet injection. Ensure Private Endpoints are configured before cutover.
+3. **Network isolation**: ACR caches using VNet injection must be replaced with **Private Link** on AMR, as AMR does not support VNet injection. Ensure Private Endpoints are configured on the AMR cache before cutover. This applies to both manual and automated migration — VNet-injected caches are supported by the automated migration API, but Private Endpoints on the target AMR cache are required.
 4. Plan for potential downtime or data sync requirements
 5. Update application connection strings and configuration
 
@@ -218,7 +218,8 @@ Azure offers an **automated migration path** from ACR to AMR via ARM REST APIs, 
 > **Important**: This feature is currently in **Public Preview**. Use the manual migration strategies (Steps 1–4 above) for production workloads until GA.
 
 **Key facts:**
-- Supported: All Basic/Standard/Premium SKUs — **except** Private Link, VNet injected, or Geo-Replicated caches
+- Supported: All Basic/Standard/Premium SKUs — **except** Private Link or Geo-Replicated caches
+- **VNet-injected caches are supported** — the customer must create Private Endpoints on the target AMR cache before migrating to maintain network isolation
 - Source and target must be in the **same region and subscription**
 - Migrates: access keys, OSS host endpoint (DNS switch), OSS port. Does **not** migrate cache data, Entra ID, persistence config, or managed identities
 - Workflow: **Validate → Migrate → Status → Cancel (Rollback)**

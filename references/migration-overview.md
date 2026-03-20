@@ -40,7 +40,7 @@ For detailed SKU mapping tables (Basic/Standard, Premium non-clustered, and Prem
 
 > **Important — Clustering Policy**: Non-clustered ACR caches (Basic, Standard, and non-clustered Premium) should be migrated to AMR with **Enterprise clustering policy** enabled. AMR uses clustering internally for all SKUs, and the default OSS clustering policy exposes cluster topology to the client, which may require application code changes (e.g., switching to a cluster-aware Redis client). Enterprise clustering policy hides this from the application, preserving the single-endpoint behavior these caches had on ACR.
 
-> **Important — Network Isolation**: AMR does not support VNet injection. ACR Premium caches using VNet injection should be migrated to AMR with **Private Link** (Private Endpoints) for network isolation.
+> **Important — Network Isolation**: AMR does not support VNet injection. ACR Premium caches using VNet injection should be migrated to AMR with **Private Link** (Private Endpoints) for network isolation. The automated migration API supports VNet-injected source caches — customers must create Private Endpoints on the target AMR cache before running the migration.
 
 ## Migration Strategies
 
@@ -106,7 +106,7 @@ Uses Azure's built-in migration API to automatically validate compatibility, swi
 See [SKILL.md — Automated Migration section](../SKILL.md#automated-migration-arm-rest-api) for full usage, supported scope, and the PowerShell utility script.
 
 **Pros**: Automated DNS switch, no client connection string changes, rollback support  
-**Cons**: Preview — limited scope (no Private Link, VNet, or geo-replicated caches); data migration not yet included
+**Cons**: Preview — limited scope (no Private Link or geo-replicated caches); data migration not yet included. VNet-injected caches are supported but require Private Endpoints on the target AMR cache.
 
 ---
 

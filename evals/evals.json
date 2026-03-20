@@ -48,13 +48,14 @@
     {
       "id": 4,
       "prompt": "I'm running a Premium P1 cache with VNet injection and private endpoints in eastus2. It also has geo-replication set up with a secondary in westus2. Can I use the automated migration API to move to AMR?",
-      "expected_output": "Correctly identifies that this cache is NOT eligible for automated migration due to VNet injection, private endpoints, and geo-replication — all three are unsupported. Recommends manual migration strategies instead. Mentions the need to switch from VNet injection to Private Link on AMR.",
+      "expected_output": "Correctly identifies that VNet injection alone is NOT a blocker for automated migration — it is supported. However, private endpoints on the source and geo-replication ARE blockers. Recommends resolving those before using automated migration, or suggests manual migration strategies. Mentions that the customer must create Private Endpoints on the target AMR cache since AMR does not support VNet injection.",
       "files": [],
       "expectations": [
-        "Identifies VNet injection as a blocker for automated migration",
+        "Does NOT identify VNet injection as a blocker for automated migration",
+        "States that VNet-injected caches are supported by the automated migration API",
         "Identifies geo-replication as a blocker for automated migration",
-        "Identifies private endpoints as a blocker for automated migration",
-        "Suggests a manual migration strategy as an alternative",
+        "Identifies private endpoints on the source as a blocker for automated migration",
+        "Mentions that Private Endpoints must be configured on the target AMR cache for VNet-injected caches",
         "Mentions that AMR uses Private Link instead of VNet injection"
       ]
     },

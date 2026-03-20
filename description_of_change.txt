@@ -1,0 +1,2 @@
+I want to be add support for VNET injected customers to this skill. Currently its not supported but we intend to add support. Read the amr and OSS codebases to understand migration. We will enable access-key sharing and DNS swap for vnet caches, but customers will need to create private endpoints on their AMR cache to get it to work. This needs to be as minimal as
+  possible while supporting VNET injection
