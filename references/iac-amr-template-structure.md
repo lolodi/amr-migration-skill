@@ -202,12 +202,11 @@ Values ≤ 60 minutes round up to `1h` (AMR minimum). Values > 720 round down to
 |---|---|---|
 | Basic or Standard tier (any C* SKU) | `EnterpriseCluster` | Single-endpoint behavior matches source |
 | Premium, non-clustered (`shardCount` = 0 or absent) | `EnterpriseCluster` | Single-endpoint behavior matches source |
-| Premium, clustered (`shardCount` ≥ 1), client **not** cluster-aware | `EnterpriseCluster` | Avoids application code changes |
-| Premium, clustered (`shardCount` ≥ 1), client **is** cluster-aware | `OSSCluster` | Client already handles cluster topology |
+| Premium, clustered (`shardCount` ≥ 1) | `OSSCluster` | Client is already cluster-aware — use matching policy |
 
-**Default behavior:** Always output `EnterpriseCluster` unless the user explicitly confirms their client is cluster-aware and wants `OSSCluster`.
+**Default behavior:** If the source is clustered (`shardCount` ≥ 1), output `OSSCluster` — the client already handles cluster topology. Otherwise, output `EnterpriseCluster`.
 
-⚠️ **Warning:** Using `OSSCluster` with a non-cluster-aware client **will cause connection failures**. When uncertain, always default to `EnterpriseCluster`.
+⚠️ **Warning:** Using `OSSCluster` with a non-cluster-aware client **will cause connection failures**. However, if the source cache was clustered, the client is necessarily cluster-aware already.
 
 ---
 

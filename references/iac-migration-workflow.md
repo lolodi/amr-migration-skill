@@ -34,7 +34,7 @@ Run the pricing scripts for both source and target SKUs to show the cost impact:
 ## Step 4: Identify Feature Gaps
 
 Check [Feature Comparison](feature-comparison.md) for features that change or are removed in AMR. Key items to flag:
-- **Clustering policy decision**: If source had `shardCount ≥ 1`, ask whether the client is cluster-aware (determines `OSSCluster` vs `EnterpriseCluster`)
+- **Clustering policy decision**: If source had `shardCount ≥ 1`, the client is already cluster-aware — default to `OSSCluster`. For non-clustered sources, use `EnterpriseCluster`.
 - **VNet injection → Private Endpoint**: Source `subnetId` requires a PE resource in the output
 - **Geo-replication**: ACR `linkedServers` (passive) cannot be auto-converted to AMR active geo-replication — warn the user
 - **Removed properties**: `enableNonSslPort`, `redisVersion`, `replicasPerPrimary`, memory reservation configs
@@ -46,7 +46,7 @@ Check [Feature Comparison](feature-comparison.md) for features that change or ar
 1. **Target AMR SKU** and how it was selected
 2. **Pricing comparison** — source monthly cost vs target monthly cost
 3. **Feature gaps** — what changes, what's removed, what needs manual attention
-4. **Clustering policy recommendation** — and why (default: `EnterpriseCluster` unless user confirms cluster-aware client)
+4. **Clustering policy recommendation** — `OSSCluster` if source was clustered (client is already cluster-aware), `EnterpriseCluster` otherwise
 
 **Wait for explicit confirmation before proceeding to Step 6.**
 
