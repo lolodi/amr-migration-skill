@@ -145,9 +145,10 @@ Scan the full `resources` array for these related resource types:
 |---------------|---------------|
 | `Microsoft.Cache/redis/firewallRules` | Firewall rules on the cache |
 | `Microsoft.Cache/redis/linkedServers` | Geo-replication links |
+| `Microsoft.Cache/redis/accessPolicyAssignments` | Entra ID access policy assignments (Data Owner, Data Contributor, etc.) |
 | `Microsoft.Network/privateEndpoints` with `"redisCache"` in `groupIds` | Existing private endpoint |
 
-For firewall rules, each resource has `properties.startIP` and `properties.endIP`. For private endpoints, check the `privateLinkServiceConnections[].groupIds` array for `"redisCache"`.
+For firewall rules, each resource has `properties.startIP` and `properties.endIP`. For private endpoints, check the `privateLinkServiceConnections[].groupIds` array for `"redisCache"`. For access policy assignments, extract the `properties.objectId`, `properties.objectIdAlias` (display name), and `properties.accessPolicyName` (e.g., `Data Owner`, `Data Contributor`).
 
 ---
 
@@ -401,6 +402,7 @@ After extracting all properties, determine which features are active. This table
 | **Firewall rules** | Child resources of type `firewallRules` present | Not supported in AMR — must use Private Endpoint + NSG |
 | **Geo-replication** | Child resources of type `linkedServers` present | Active geo-replication uses a different AMR mechanism |
 | **Managed identity** | `identity` block is present | Preserved in the AMR cluster resource |
+| **Access policy assignments** | Child resources of type `accessPolicyAssignments` present | Map ACR policies to AMR database-level access policy assignments (see transformation rules) |
 | **Non-SSL port** | `enableNonSslPort` = `true` | Removed in AMR (always SSL-only, port 10000) |
 | **Availability zones** | `zones` array is present and non-empty | Preserved in AMR |
 
@@ -441,7 +443,11 @@ Source Configuration
 │   └── Identity Block: full identity object
 ├── Tags: key-value map
 ├── Has Geo-Replication: true/false
-└── Has MRPP: true/false (replicasPerPrimary > 1)
+├── Has MRPP: true/false (replicasPerPrimary > 1)
+└── Access Policy Assignments: array of
+    ├── Object ID: Entra object ID (GUID)
+    ├── Display Name: objectIdAlias (e.g., "Lorenzo Lodi Rizzini")
+    └── ACR Policy Name: "Data Owner", "Data Contributor", etc.
 ```
 
 If any value could not be resolved from the template and parameters, mark it as `<unresolved: paramName>` and surface it to the user for clarification before proceeding with transformation.

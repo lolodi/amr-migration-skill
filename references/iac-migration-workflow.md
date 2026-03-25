@@ -35,6 +35,7 @@ Run the pricing scripts for both source and target SKUs to show the cost impact:
 
 Check [Feature Comparison](feature-comparison.md) for features that change or are removed in AMR. Key items to flag:
 - **Clustering policy decision**: If source had `shardCount ≥ 1`, the client is already cluster-aware — default to `OSSCluster`. For non-clustered sources, use `EnterpriseCluster`.
+- **Access policy assignments**: Map ACR `Data Owner` / `Data Contributor` → AMR `default`. Flag `Data Reader` as needing a custom policy.
 - **VNet injection → Private Endpoint**: Source `subnetId` requires a PE resource in the output
 - **Geo-replication**: ACR `linkedServers` (passive) cannot be auto-converted to AMR active geo-replication — warn the user
 - **Removed properties**: `enableNonSslPort`, `redisVersion`, `replicasPerPrimary`, memory reservation configs
