@@ -15,7 +15,6 @@ These are **blocking** — migration cannot proceed until resolved:
 | Source and target must be in the same subscription | Move or recreate the target AMR cache in the same subscription as the source |
 | Geo-replication enabled on source | Disable geo-replication on the source before migration |
 | Private endpoints on source | Remove private endpoints from the source before migration |
-| VNet injection enabled on source | Use a non-VNet injected source cache |
 | TLS mismatch (source TLS-only, target non-TLS) | Configure the target database to support TLS connections |
 
 ## Validation Warnings
