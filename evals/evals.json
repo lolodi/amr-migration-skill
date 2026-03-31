@@ -47,15 +47,13 @@
     },
     {
       "id": 4,
-      "prompt": "I'm running a Premium P1 cache with VNet injection and private endpoints in eastus2. It also has geo-replication set up with a secondary in westus2. Can I use the automated migration API to move to AMR?",
-      "expected_output": "Correctly identifies that this cache is NOT eligible for automated migration due to VNet injection, private endpoints, and geo-replication — all three are unsupported. Recommends manual migration strategies instead. Mentions the need to switch from VNet injection to Private Link on AMR.",
+      "prompt": "I'm running a Premium P1 cache with private endpoints in eastus2. It also has geo-replication set up with a secondary in westus2. Can I use the automated migration API to move to AMR?",
+      "expected_output": "Correctly identifies that this cache is NOT eligible for automated migration due to private endpoints and geo-replication — both are unsupported. Recommends manual migration strategies instead.",
       "files": [],
       "expectations": [
-        "Identifies VNet injection as a blocker for automated migration",
         "Identifies geo-replication as a blocker for automated migration",
         "Identifies private endpoints as a blocker for automated migration",
-        "Suggests a manual migration strategy as an alternative",
-        "Mentions that AMR uses Private Link instead of VNet injection"
+        "Suggests a manual migration strategy as an alternative"
       ]
     },
     {
@@ -72,6 +70,35 @@
         "Numeric values are sane: memory > 0, server load between 0-100%, connected clients >= 0, bandwidth >= 0",
         "Produces a specific AMR SKU recommendation (e.g., M20, B10, X10) — not a generic 'pick an M-series'",
         "References the SKU mapping guide or AMR SKU specs when making the recommendation"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "We have a Premium P2 cache with VNet injection in westus2. No private endpoints, no geo-replication. We want to migrate to AMR. Help us plan the migration including network setup.",
+      "expected_output": "Detects that the cache is VNet-injected and explains that AMR does not support VNet injection. Recommends creating a Private Endpoint on the target AMR cache in the same VNet before migration. Provides or references CLI commands for Private Endpoint creation. Recommends an appropriate AMR SKU. Explains that automated migration is supported for VNet-injected caches. Mentions the port change (6380 to 10000).",
+      "files": [],
+      "expectations": [
+        "Detects or mentions VNet injection on the source cache",
+        "Explains that AMR uses Private Link instead of VNet injection",
+        "Recommends creating a Private Endpoint on the target AMR cache before migration",
+        "References the private-endpoint-setup guide or provides PE creation CLI commands",
+        "States that automated migration IS supported for VNet-injected caches (not blocked)",
+        "Recommends a specific AMR SKU (e.g., M20, M50) appropriate for a P2 cache",
+        "Mentions the TLS port change from 6380 to 10000",
+        "Mentions the Private DNS zone privatelink.redis.azure.net"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "I have a Premium P1 cache called 'vnet-cache' in resource group 'rg-prod'. It's VNet-injected. Can you look up its subnet info and tell me how to set up Private Link on my new AMR cache 'amr-cache' in the same RG?",
+      "expected_output": "Uses az redis show to extract the subnetId from the source cache. Parses the VNet name, subnet name, and VNet resource group from the subnetId. Provides CLI commands to create a Private Endpoint on the AMR cache in the same VNet. Includes Private DNS zone setup with privatelink.redis.azure.net.",
+      "files": [],
+      "expectations": [
+        "Runs or shows az redis show with a query for subnetId",
+        "Extracts or explains how to parse VNet name and subnet from the subnetId path",
+        "Provides az network private-endpoint create command with correct group-id (redisEnterprise)",
+        "Includes Private DNS zone setup with privatelink.redis.azure.net",
+        "Mentions the subnet delegation constraint (cannot reuse the delegated subnet for PE)"
       ]
     }
   ]

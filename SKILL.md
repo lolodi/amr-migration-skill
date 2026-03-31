@@ -75,6 +75,19 @@ Always mention these when discussing migration — they require application chan
 
 If the user is using the automated migration with DNS switching, the old hostname continues to work, but the port change still applies.
 
+### Detecting VNET-Injected Caches
+When assessing a cache for migration, always check whether it uses VNet injection:
+
+```bash
+az redis show -n <cacheName> -g <resourceGroup> --query "{subnetId: subnetId, privateEndpoints: privateEndpointConnections}" -o json
+```
+
+- If `subnetId` is **non-null**: the cache is **VNet-injected**. AMR does not support VNet injection, so a Private Endpoint must be configured on the target AMR cache before migration. Follow [Private Endpoint Setup](references/private-endpoint-setup.md).
+- Extract the VNet name and subnet from the `subnetId` to set up the Private Endpoint in the same network. Offer to run the PE creation commands from [Private Endpoint Setup](references/private-endpoint-setup.md) — this is consistent with how the skill runs pricing, metrics, and migration scripts for the user.
+- If `privateEndpointConnections` is **non-empty**: the source cache has Private Endpoints. Private Endpoint-enabled source caches are **not supported** for automated migration.
+
+When presenting the migration plan to the user, if the source cache is VNet-injected, include Private Endpoint setup as a required pre-step and offer to execute it. Follow the same pattern as the pricing and metrics scripts — run the commands for the user rather than just listing them.
+
 ## Available Resources
 
 > **Important**: Always use the provided scripts for pricing lookups and metrics retrieval. Do not craft custom API calls or scripts — the provided ones already handle tier-specific calculation logic (HA, shards, MRPP) and metric aggregation correctly. For metrics, use a default time range of **7 days** unless the user specifies otherwise.
@@ -235,7 +248,7 @@ Use these values to:
 ### Step 3: Plan Migration
 1. Determine migration strategy (dual-write, snapshot/restore, etc.)
 2. **Clustering policy**: For non-clustered ACR caches (Basic, Standard, non-clustered Premium), create the AMR cache with **Enterprise clustering policy** to avoid client application changes. OSS clustering policy exposes cluster topology and may require a cluster-aware client.
-3. **Network isolation**: ACR caches using VNet injection must be replaced with **Private Link** on AMR, as AMR does not support VNet injection. Ensure Private Endpoints are configured before cutover.
+3. **Network isolation (VNET caches)**: If the source cache is VNet-injected, a **Private Endpoint** must be configured on the target AMR cache before migration. AMR uses Private Link instead of VNet injection. Proactively offer to set this up for the user by running the CLI commands from [Private Endpoint Setup](references/private-endpoint-setup.md): extract the VNet/subnet from the source cache's `subnetId`, create a new subnet (the delegated subnet can't host PEs), create the Private Endpoint with `--group-id redisEnterprise`, configure the `privatelink.redis.azure.net` DNS zone, and validate connectivity.
 4. Plan for potential downtime or data sync requirements
 5. Update application connection strings and configuration
 
@@ -262,7 +275,8 @@ Azure offers an **automated migration path** from ACR to AMR via ARM REST APIs, 
 > **Important**: This feature is currently in **Public Preview**. Use the manual migration strategies (Steps 1–4 above) for production workloads until GA.
 
 **Key facts:**
-- Supported: All Basic/Standard/Premium SKUs — **except** Private Link, VNet injected, or Geo-Replicated caches
+- Supported: All Basic/Standard/Premium SKUs — **except** Private Link enabled or Geo-Replicated caches
+- VNet-injected caches **are supported** but require Private Endpoint setup on the target AMR cache before migration — see [Private Endpoint Setup](references/private-endpoint-setup.md)
 - Source and target must be in the **same region and subscription**
 - Migrates: access keys, OSS host endpoint (DNS switch), OSS port. Does **not** migrate cache data, Entra ID, persistence config, or managed identities
 - Workflow: **Validate → Migrate → Status → Cancel (Rollback)**

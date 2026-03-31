@@ -77,6 +77,32 @@ If links are returned, the cache uses passive geo-replication (active geo-replic
 
 ---
 
+## VNET Detection (Premium)
+
+Check if a cache uses VNet injection:
+
+```bash
+az redis show -g <resourceGroup> -n <cacheName> --query "{subnetId: subnetId}" -o json
+```
+
+If `subnetId` is not null, the cache is VNet-injected. Extract the VNet details:
+
+```bash
+# Get the full subnet ID
+SUBNET_ID=$(az redis show -n <cacheName> -g <resourceGroup> --query "subnetId" -o tsv)
+
+# Parse VNet and subnet names
+VNET_RG=$(echo $SUBNET_ID | cut -d'/' -f5)
+VNET_NAME=$(echo $SUBNET_ID | cut -d'/' -f9)
+SUBNET_NAME=$(echo $SUBNET_ID | cut -d'/' -f11)
+
+echo "VNet RG: $VNET_RG, VNet: $VNET_NAME, Subnet: $SUBNET_NAME"
+```
+
+These values are used when creating a Private Endpoint on the target AMR cache. See [Private Endpoint Setup](private-endpoint-setup.md).
+
+---
+
 ## Export Cache Metadata to JSON
 
 ```bash
@@ -94,6 +120,6 @@ When gathering cache details for migration sizing, capture:
 - **Replicas per primary** (MRPP)
 - **Redis version**
 - **Persistence** (RDB/AOF)
-- **Network/TLS settings**
+- **Network/TLS settings** (including `subnetId` for VNet-injected caches)
 
 These map directly to AMR tier selection and pricing scripts.
