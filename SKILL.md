@@ -83,10 +83,10 @@ az redis show -n <cacheName> -g <resourceGroup> --query "{subnetId: subnetId, pr
 ```
 
 - If `subnetId` is **non-null**: the cache is **VNet-injected**. AMR does not support VNet injection, so a Private Endpoint must be configured on the target AMR cache before migration. Follow [Private Endpoint Setup](references/private-endpoint-setup.md).
-- Extract the VNet name and subnet from the `subnetId` to help the user create the Private Endpoint in the same network.
+- Extract the VNet name and subnet from the `subnetId` to set up the Private Endpoint in the same network. Offer to run the PE creation commands from [Private Endpoint Setup](references/private-endpoint-setup.md) — this is consistent with how the skill runs pricing, metrics, and migration scripts for the user.
 - If `privateEndpointConnections` is **non-empty**: the source cache has Private Endpoints. Private Endpoint-enabled source caches are **not supported** for automated migration.
 
-When presenting the migration plan to the user, if the source cache is VNet-injected, include Private Endpoint setup as a required pre-step before executing the automated migration.
+When presenting the migration plan to the user, if the source cache is VNet-injected, include Private Endpoint setup as a required pre-step and offer to execute it. Follow the same pattern as the pricing and metrics scripts — run the commands for the user rather than just listing them.
 
 ## Available Resources
 
@@ -248,7 +248,7 @@ Use these values to:
 ### Step 3: Plan Migration
 1. Determine migration strategy (dual-write, snapshot/restore, etc.)
 2. **Clustering policy**: For non-clustered ACR caches (Basic, Standard, non-clustered Premium), create the AMR cache with **Enterprise clustering policy** to avoid client application changes. OSS clustering policy exposes cluster topology and may require a cluster-aware client.
-3. **Network isolation (VNET caches)**: If the source cache is VNet-injected, create a **Private Endpoint** on the target AMR cache before migration. AMR uses Private Link instead of VNet injection. Use the source cache's `subnetId` to identify the VNet — see [Private Endpoint Setup](references/private-endpoint-setup.md) for step-by-step CLI commands.
+3. **Network isolation (VNET caches)**: If the source cache is VNet-injected, a **Private Endpoint** must be configured on the target AMR cache before migration. AMR uses Private Link instead of VNet injection. Proactively offer to set this up for the user by running the CLI commands from [Private Endpoint Setup](references/private-endpoint-setup.md): extract the VNet/subnet from the source cache's `subnetId`, create a new subnet (the delegated subnet can't host PEs), create the Private Endpoint with `--group-id redisEnterprise`, configure the `privatelink.redis.azure.net` DNS zone, and validate connectivity.
 4. Plan for potential downtime or data sync requirements
 5. Update application connection strings and configuration
 
