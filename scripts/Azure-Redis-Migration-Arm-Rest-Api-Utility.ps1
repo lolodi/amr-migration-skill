@@ -63,6 +63,22 @@ $ArmBaseUrl = "https://management.azure.com"
 $ErrorActionPreference = "Stop"
 $currentScript = $MyInvocation.MyCommand.Source
 
+# Identify this script in ARM telemetry. Azure CLI appends AZURE_HTTP_USER_AGENT
+# to the User-Agent header on every request (including 'az rest'), enabling the
+# team to track usage of the AMR migration skill via ARM request logs.
+# Version is read from the VERSION file at the repo root. Any pre-existing
+# AZURE_HTTP_USER_AGENT (e.g. set by VS Code, Terraform, CI) is preserved.
+$skillVersion = try {
+    (Get-Content -Raw -Path (Join-Path $PSScriptRoot '..' 'VERSION') -ErrorAction Stop).Trim()
+} catch { 'unknown' }
+if ([string]::IsNullOrWhiteSpace($skillVersion)) { $skillVersion = 'unknown' }
+$skillUserAgent = "amr-migration-skill/$skillVersion"
+if ($env:AZURE_HTTP_USER_AGENT -and $env:AZURE_HTTP_USER_AGENT -notlike "*amr-migration-skill/*") {
+    $env:AZURE_HTTP_USER_AGENT = "$skillUserAgent $($env:AZURE_HTTP_USER_AGENT)"
+} elseif (-not $env:AZURE_HTTP_USER_AGENT) {
+    $env:AZURE_HTTP_USER_AGENT = $skillUserAgent
+}
+
 function Show-Help
 {
     Get-Help -Name $currentScript -Full

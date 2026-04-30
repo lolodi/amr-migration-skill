@@ -63,6 +63,16 @@
 
 set -euo pipefail
 
+# Identify this script in ARM telemetry. Azure CLI appends AZURE_HTTP_USER_AGENT
+# to the User-Agent header on every request (including 'az rest'), enabling the
+# team to track usage of the AMR migration skill via ARM request logs.
+# Version is read from the VERSION file at the repo root. Any pre-existing
+# AZURE_HTTP_USER_AGENT (e.g. set by VS Code, Terraform, CI) is preserved.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SKILL_VERSION="$(tr -d '[:space:]' < "${SCRIPT_DIR}/../VERSION" 2>/dev/null || echo "unknown")"
+[[ -z "$SKILL_VERSION" ]] && SKILL_VERSION="unknown"
+export AZURE_HTTP_USER_AGENT="amr-migration-skill/${SKILL_VERSION}${AZURE_HTTP_USER_AGENT:+ ${AZURE_HTTP_USER_AGENT}}"
+
 # --- Defaults ---
 ACTION=""
 SOURCE_RESOURCE_ID=""
